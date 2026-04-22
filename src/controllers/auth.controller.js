@@ -1,15 +1,24 @@
+const AuthService = require("../services/auth.service");
+
 class AuthController {
   static googleCallback(req, res) {
     try {
       const user = req.user;
 
       if (!user) {
-        return res.redirect("/auth/failure");
+        return res.redirect("http://localhost:3000/?error=auth_failed");
       }
 
-      return res.send("Login success");
+      // ✅ Generate JWT token
+      const token = AuthService.generateToken(user);
+
+      // ✅ Send token to frontend
+      return res.redirect(
+        `http://localhost:3000/auth/callback?token=${token}`
+      );
     } catch (error) {
-      return res.status(500).json({ message: "Auth failed" });
+      console.error("Google Callback Error:", error);
+      return res.redirect("http://localhost:3000/?error=server_error");
     }
   }
 
