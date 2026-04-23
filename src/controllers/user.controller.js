@@ -2,17 +2,42 @@
 
 const User = require("../models/user.model");
 
-const getMe = async (req, res) => {
-  try {
-    const user = await User.findById(req.user.id).select("-__v");
+class UserController {
+  // Get Logged In User
+  async getMe(req, res) {
+    try {
+      const user = await User.findById(req.user.id).select("-__v");
 
-    res.json({
-      success: true,
-      user,
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+      return res.json({
+        success: true,
+        user,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        error: error.message,
+      });
+    }
   }
-};
 
-module.exports = { getMe };
+  // Get All Users
+  async getAllUsers(req, res) {
+    try {
+      const users = await User.find({
+        _id: { $ne: req.user.id },
+      }).select("_id name email avatar isPremium createdAt");
+
+      return res.json({
+        success: true,
+        users,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        error: error.message,
+      });
+    }
+  }
+}
+
+module.exports = new UserController();

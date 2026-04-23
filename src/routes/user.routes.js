@@ -1,9 +1,32 @@
+// src/routes/user.routes.js
+
 const express = require("express");
-const { getMe } = require("../controllers/user.controller");
 const authMiddleware = require("../middlewares/auth.middleware");
+const UserController = require("../controllers/user.controller");
 
-const router = express.Router();
+class UserRoutes {
+  constructor() {
+    this.router = express.Router();
+    this.initializeRoutes();
+  }
 
-router.get("/me", authMiddleware, getMe);
+  initializeRoutes() {
+    this.router.get(
+      "/me",
+      authMiddleware,
+      UserController.getMe.bind(UserController)
+    );
 
-module.exports = router;
+    this.router.get(
+      "/all",
+      authMiddleware,
+      UserController.getAllUsers.bind(UserController)
+    );
+  }
+
+  getRouter() {
+    return this.router;
+  }
+}
+
+module.exports = new UserRoutes().getRouter();
