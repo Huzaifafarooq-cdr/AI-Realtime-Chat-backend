@@ -23,11 +23,15 @@ class AuthService {
     return jwt.sign(
       {
         id: user._id,
+        name: user.name,          // ✅ Added Name
         email: user.email,
+        avatar: user.avatar,      // ✅ Added Avatar
         isPremium: user.isPremium,
       },
       process.env.JWT_SECRET,
-      { expiresIn: "1d" }
+      {
+        expiresIn: "1d",
+      }
     );
   }
 }
