@@ -1,13 +1,34 @@
 const express = require("express");
-const router = express.Router();
-
 const authMiddleware = require("../middlewares/auth.middleware");
 const MessageController = require("../controllers/message.controller");
 
-router.get(
-  "/:receiverId",
-  authMiddleware,
-  MessageController.getMessages
-);
+class MessageRoutes {
+  constructor() {
+    this.router = express.Router();
+    this.initializeRoutes();
+  }
 
-module.exports = router;
+  initializeRoutes() {
+    // ==========================================
+    // GET CHAT HISTORY
+    // GET /messages/:receiverId
+    // ==========================================
+    this.router.get(
+      "/:receiverId",
+      authMiddleware,
+      MessageController.getMessages
+    );
+
+    // ==========================================
+    // GET SIDEBAR CHATS
+    // GET /messages/sidebar
+    // ==========================================
+    this.router.get(
+      "/sidebar",
+      authMiddleware,
+      MessageController.getSidebarChats
+    );
+  }
+}
+
+module.exports = new MessageRoutes().router;
