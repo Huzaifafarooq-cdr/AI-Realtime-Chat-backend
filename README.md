@@ -116,16 +116,16 @@ Razorpay Flow:
 
 ## Example API Routes
 ### Auth Routes
--auth/google 
--auth/google/callback  
+- auth/google 
+- auth/google/callback  
 defaults to /auth/google and /auth/google/callback.
 ### Message Routes
--a/api/messages/sidebar 
--a/api/messages/:userId  
+- a/api/messages/sidebar 
+- a/api/messages/:userId  
 defaults to /api/messages/sidebar and /api/messages/:userId.
 ### Payment Routes
--a/api/payment/create-order
--a/api/payment/verify  
+- a/api/payment/create-order
+- a/api/payment/verify  
 defaults to /api/payment/create-order and /api/payment/verify.
 
 ## Database Models
@@ -138,9 +138,9 @@ details of each model are provided.
 
 ## Future Improvements
 
--group chat rooms,
--fie upload
--read receipts
--messages reactions
--rdis for socket scaling
--admindashboard
+- Group chat rooms
+- Fie upload
+- Read receipts
+- Messages reactions
+- Redis for socket scaling
+- Admindashboard
