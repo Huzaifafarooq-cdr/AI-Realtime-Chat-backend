@@ -23,9 +23,9 @@ class AuthService {
     return jwt.sign(
       {
         id: user._id,
-        name: user.name,          // ✅ Added Name
+        name: user.name,      
         email: user.email,
-        avatar: user.avatar,      // ✅ Added Avatar
+        avatar: user.avatar,     
         isPremium: user.isPremium,
       },
       process.env.JWT_SECRET,

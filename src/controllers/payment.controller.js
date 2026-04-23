@@ -9,9 +9,6 @@ class PaymentController {
     this.razorpay = razorpayConfig.getInstance();
   }
 
-  // ============================
-  // 🧾 CREATE ORDER
-  // ============================
   createOrder = async (req, res) => {
     try {
       const { amount } = req.body;
@@ -21,7 +18,6 @@ class PaymentController {
         currency: "INR",
         receipt: "receipt_" + Date.now(),
 
-        // 🔥 IMPORTANT FOR WEBHOOK
         notes: {
           userId: req.user.id,
         },
@@ -35,9 +31,6 @@ class PaymentController {
     }
   };
 
-  // ============================
-  // ✅ VERIFY PAYMENT (FRONTEND)
-  // ============================
   verifyPayment = async (req, res) => {
     try {
       const {
@@ -66,16 +59,13 @@ class PaymentController {
 
       res.json({
         success: true,
-        message: "Premium activated 🚀",
+        message: "Premium activated ",
       });
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
   };
 
-  // ============================
-  // 🔔 WEBHOOK (FINAL)
-  // ============================
   webhookHandler = async (req, res) => {
     try {
       const secret = process.env.RAZORPAY_WEBHOOK_SECRET;
@@ -84,7 +74,7 @@ class PaymentController {
 
       const expectedSignature = crypto
         .createHmac("sha256", secret)
-        .update(req.rawBody) // 🔥 USE RAW BODY
+        .update(req.rawBody) 
         .digest("hex");
 
       if (expectedSignature !== signature) {
@@ -106,13 +96,13 @@ class PaymentController {
             isPremium: true,
           });
 
-          console.log("✅ Premium via webhook:", userId);
+          console.log("Premium via webhook:", userId);
         }
       }
 
       res.json({ success: true });
     } catch (error) {
-      console.error("❌ Webhook error:", error.message);
+      console.error("Webhook error:", error.message);
       res.status(500).json({ error: error.message });
     }
   };

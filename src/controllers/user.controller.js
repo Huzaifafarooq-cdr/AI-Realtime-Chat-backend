@@ -3,7 +3,7 @@
 const User = require("../models/user.model");
 
 class UserController {
-  // Get Logged In User
+
   async getMe(req, res) {
     try {
       const user = await User.findById(req.user.id).select("-__v");
@@ -20,7 +20,6 @@ class UserController {
     }
   }
 
-  // Get All Users
   async getAllUsers(req, res) {
     try {
       const users = await User.find({

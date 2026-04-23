@@ -35,14 +35,14 @@ Only replies, one per line.
           .slice(0, 3);
 
       } catch (error) {
-        console.log(`❌ ${modelName} failed:`, error.message);
+        console.log(`${modelName} failed:`, error.message);
       }
     }
 
     return [
       "Sounds good!",
-      "Tell me more 😊",
-      "Okay 👍"
+      "Tell me more !",
+      "Okay"
     ];
   }
 }

@@ -2,9 +2,6 @@ const Message = require("../models/message.model");
 const User = require("../models/user.model");
 
 class MessageController {
-  // ==========================================
-  // Chat History
-  // ==========================================
   static async getMessages(req, res) {
     try {
       const senderId = req.user.id;
@@ -29,14 +26,10 @@ class MessageController {
     }
   }
 
-  // ==========================================
-  // Sidebar Chats
-  // ==========================================
+
   static async getSidebarChats(req, res) {
     try {
       const myId = req.user.id;
-
-      // all chats involving logged user
       const messages = await Message.find({
         $or: [
           { senderId: myId },

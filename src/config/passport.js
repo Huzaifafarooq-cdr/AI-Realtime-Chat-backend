@@ -15,19 +15,16 @@ class PassportConfig {
         },
         async (accessToken, refreshToken, profile, done) => {
           try {
-            // ✅ SAFE email extraction
             const email = profile.emails?.[0]?.value;
 
             if (!email) {
               return done(new Error("No email found from Google"), null);
             }
 
-            // ✅ SAFE allowed users check
             const allowedUsers = process.env.ALLOWED_USERS
               ? process.env.ALLOWED_USERS.split(",")
               : [];
 
-            // (optional) if you want to restrict users
             if (allowedUsers.length > 0 && !allowedUsers.includes(email)) {
               return done(new Error("User not allowed"), false);
             }

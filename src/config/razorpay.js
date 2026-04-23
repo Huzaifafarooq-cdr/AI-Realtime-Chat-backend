@@ -1,5 +1,3 @@
-// src/config/razorpay.js
-
 const Razorpay = require("razorpay");
 
 class RazorpayConfig {

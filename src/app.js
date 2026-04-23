@@ -16,7 +16,6 @@ class App {
   }
 
   initializeMiddlewares() {
-    // ✅ CORS FIRST
     this.app.use(
       cors({
         origin: [
