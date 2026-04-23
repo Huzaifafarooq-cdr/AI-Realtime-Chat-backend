@@ -5,31 +5,28 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const getSuggestions = async (text) => {
   try {
     const model = genAI.getGenerativeModel({
-      model: "gemini-1.5-flash-latest"
+      model: "gemini-2.0-flash",
     });
 
     const prompt = `
-You are a smart chat assistant.
-Generate 3 short reply suggestions for this message:
-
+Generate 3 short casual reply suggestions for:
 "${text}"
 
-Keep them casual and human.
+Only replies, one per line.
 `;
 
     const result = await model.generateContent(prompt);
-    const response = result.response.text();
+    const output = result.response.text();
 
-    // Convert text → array
-    const suggestions = response
+    return output
       .split("\n")
-      .filter((line) => line.trim() !== "");
-
-    return suggestions.slice(0, 3);
+      .map((line) => line.replace(/^[0-9.)-]+\s*/, "").trim())
+      .filter(Boolean)
+      .slice(0, 3);
 
   } catch (error) {
-    console.error(" Gemini Error:", error.message);
-    return ["Sorry, AI failed 😅"];
+    console.error("Gemini Error:", error.message);
+    return ["AI unavailable right now"];
   }
 };
 
