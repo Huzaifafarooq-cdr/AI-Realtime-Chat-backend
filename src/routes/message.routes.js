@@ -9,14 +9,12 @@ class MessageRoutes {
   }
 
   initializeRoutes() {
-    // ✅ Put static route FIRST
     this.router.get(
       "/sidebar",
       authMiddleware,
       MessageController.getSidebarChats
     );
 
-    // ✅ Dynamic route SECOND
     this.router.get(
       "/:receiverId",
       authMiddleware,

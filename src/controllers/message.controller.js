@@ -1,13 +1,11 @@
 const Message = require("../models/message.model");
+const User = require("../models/user.model");
 
 class MessageController {
-  constructor() {}
-
   // ==========================================
-  // GET CHAT HISTORY
-  // GET /messages/:receiverId
+  // Chat History
   // ==========================================
-  getMessages = async (req, res) => {
+  static async getMessages(req, res) {
     try {
       const senderId = req.user.id;
       const receiverId = req.params.receiverId;
@@ -29,70 +27,57 @@ class MessageController {
         message: error.message,
       });
     }
-  };
+  }
 
   // ==========================================
-  // GET SIDEBAR CHATS
-  // GET /messages/sidebar
+  // Sidebar Chats
   // ==========================================
-  getSidebarChats = async (req, res) => {
+  static async getSidebarChats(req, res) {
     try {
       const myId = req.user.id;
 
-      const chats = await Message.aggregate([
-        {
-          $match: {
-            $or: [{ senderId: myId }, { receiverId: myId }],
-          },
-        },
-        {
-          $sort: { createdAt: -1 },
-        },
-        {
-          $group: {
-            _id: {
-              $cond: [
-                { $eq: ["$senderId", myId] },
-                "$receiverId",
-                "$senderId",
-              ],
-            },
-            lastMessage: { $first: "$message" },
-            createdAt: { $first: "$createdAt" },
-          },
-        },
-        {
-          $lookup: {
-            from: "users",
-            localField: "_id",
-            foreignField: "_id",
-            as: "user",
-          },
-        },
-        {
-          $unwind: "$user",
-        },
-        {
-          $project: {
-            _id: 0,
-            userId: "$user._id",
-            name: "$user.name",
-            avatar: "$user.avatar",
-            lastMessage: 1,
-            time: {
-              $dateToString: {
-                format: "%H:%M",
-                date: "$createdAt",
-              },
-            },
-            unread: { $literal: 0 },
-          },
-        },
-      ]);
+      // all chats involving logged user
+      const messages = await Message.find({
+        $or: [
+          { senderId: myId },
+          { receiverId: myId }
+        ]
+      }).sort({ createdAt: -1 });
+
+      const uniqueUsers = new Map();
+
+      for (const msg of messages) {
+        const otherUserId =
+          msg.senderId.toString() === myId
+            ? msg.receiverId.toString()
+            : msg.senderId.toString();
+
+        if (!uniqueUsers.has(otherUserId)) {
+          const user = await User.findById(otherUserId);
+
+          if (user) {
+            uniqueUsers.set(otherUserId, {
+              id: user._id,
+              name: user.name,
+              avatar:
+                user.avatar ||
+                `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                  user.name
+                )}`,
+              lastMessage: msg.message,
+              time: new Date(msg.createdAt).toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+              }),
+              unread: 0,
+            });
+          }
+        }
+      }
 
       res.json({
         success: true,
-        chats,
+        chats: Array.from(uniqueUsers.values()),
       });
     } catch (error) {
       res.status(500).json({
@@ -100,7 +85,7 @@ class MessageController {
         message: error.message,
       });
     }
-  };
+  }
 }
 
-module.exports = new MessageController();
+module.exports = MessageController;
