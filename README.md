@@ -96,7 +96,6 @@ defaults to JWT Token Generation.
 Handles:
 - Send Message
 - Receive Message
-- Load Chat History 
 - Sidebar Conversations 
 ### Socket Module 
 Handles events:
