@@ -6,51 +6,57 @@ class AIService {
   static async getSuggestions(text) {
     const models = [
       "gemini-2.0-flash",
-      "gemini-2.5-flash"
+      "gemini-2.5-flash",
     ];
 
     for (const modelName of models) {
       try {
-        const model = genAI.getGenerativeModel({
-          model: modelName,
-        });
+        const model = genAI.getGenerativeModel({ model: modelName });
 
         const prompt = `
-Generate 3 short natural casual chat replies for:
+Generate 3 short natural chat replies for:
 "${text}"
 
-Rules:
-- Keep replies short
-- Human sounding
-- Friendly tone
-- One reply per line
-- No numbering
+One per line only.
 `;
 
         const result = await model.generateContent(prompt);
         const output = result.response.text();
 
-        const suggestions = output
+        const replies = output
           .split("\n")
           .map((line) => line.trim())
           .filter(Boolean)
-          .map((line) =>
-            line.replace(/^[0-9.)-]+\s*/, "")
-          )
           .slice(0, 3);
 
-        if (suggestions.length > 0) {
-          return suggestions;
-        }
+        if (replies.length) return replies;
       } catch (error) {
-        console.log(`${modelName} failed:`, error.message);
+        console.log(`${modelName} failed: ${error.message}`);
       }
     }
 
+    return AIService.localSuggestions(text);
+  }
+
+  static localSuggestions(text) {
+    const msg = text.toLowerCase();
+
+    if (msg.includes("hello") || msg.includes("hi")) {
+      return ["Hi 👋", "Hello!", "Hey there 😊"];
+    }
+
+    if (msg.includes("how are")) {
+      return ["I'm good 😊", "Doing great!", "All good here 👍"];
+    }
+
+    if (msg.includes("thank")) {
+      return ["You're welcome 😊", "Anytime!", "No problem 👍"];
+    }
+
     return [
-      "Sounds good to me",
+      "Sounds good 👍",
       "Okay, tell me more",
-      "Let's do it ",
+      "Let's do it 🚀",
     ];
   }
 }
