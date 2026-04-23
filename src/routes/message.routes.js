@@ -9,26 +9,24 @@ class MessageRoutes {
   }
 
   initializeRoutes() {
-    // ==========================================
-    // GET CHAT HISTORY
-    // GET /messages/:receiverId
-    // ==========================================
-    this.router.get(
-      "/:receiverId",
-      authMiddleware,
-      MessageController.getMessages
-    );
-
-    // ==========================================
-    // GET SIDEBAR CHATS
-    // GET /messages/sidebar
-    // ==========================================
+    // ✅ Put static route FIRST
     this.router.get(
       "/sidebar",
       authMiddleware,
       MessageController.getSidebarChats
     );
+
+    // ✅ Dynamic route SECOND
+    this.router.get(
+      "/:receiverId",
+      authMiddleware,
+      MessageController.getMessages
+    );
+  }
+
+  getRouter() {
+    return this.router;
   }
 }
 
-module.exports = new MessageRoutes().router;
+module.exports = new MessageRoutes().getRouter();
