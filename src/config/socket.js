@@ -6,8 +6,12 @@ let io;
 const initSocket = (server) => {
   io = new Server(server, {
     cors: {
-      origin: "*",
+      origin: [
+        "http://localhost:3000",
+        "https://ai-realtime-chat-frontend.vercel.app",
+      ],
       methods: ["GET", "POST"],
+      credentials: true,
     },
   });
 

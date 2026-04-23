@@ -1,6 +1,7 @@
 const express = require("express");
 const passport = require("passport");
 const dotenv = require("dotenv");
+const cors = require("cors");
 
 const PassportConfig = require("../src/config/passport");
 const authRoutes = require("../src/routes/auth.routes");
@@ -15,6 +16,17 @@ class App {
   }
 
   initializeMiddlewares() {
+    // ✅ CORS FIRST
+    this.app.use(
+      cors({
+        origin: [
+          "http://localhost:3000",
+          "https://ai-realtime-chat-frontend.vercel.app",
+        ],
+        credentials: true,
+      })
+    );
+
     this.app.use(express.json());
 
     PassportConfig.initialize();
