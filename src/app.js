@@ -37,6 +37,7 @@ class App {
     this.app.use("/auth", authRoutes);
     this.app.use("/user", require("./routes/user.routes"));
     this.app.use("/payment", require("./routes/payment.routes"));
+    this.app.use("/messages", require("./routes/message.routes"));
   }
 
   getApp() {
